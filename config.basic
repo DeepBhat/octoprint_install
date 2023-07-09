@@ -1,0 +1,15 @@
+api:
+    allowCrossOrigin: true
+appearance:
+    name: NanoFactory
+feature:
+    modelSizeDetection: false
+serial:
+    additionalPorts:
+    - /dev/octo_nanofactory
+server:
+    commands:
+        serverRestartCommand: sudo systemctl restart nanofactory
+        systemRestartCommand: sudo reboot
+        systemShutdownCommand: sudo shutdown -n now
+    firstRun: true
