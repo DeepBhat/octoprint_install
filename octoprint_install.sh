@@ -226,6 +226,7 @@ prepare() {
             #Prompt for admin user and firstrun stuff
             install_yq
             firstrun
+            initialize_nanofactory
 
             echo 'Starting OctoPrint service on port 5000'
             #server restart commands
@@ -239,10 +240,6 @@ prepare() {
             echo
             
             #this restart seems necessary in some cases
-            systemctl restart octoprint.service
-            echo
-            initialize_nanofactory
-            echo
             systemctl restart octoprint.service
         fi
         touch /etc/camera_ports
@@ -314,10 +311,18 @@ streamer_install() {
 }
 
 initialize_nanofactory() {
-    echo "Waiting for OctoPrint to start..."
-    while ! lsof -i :5000 >/dev/null 2>&1; do sleep 1s; done
+    echo "Initializing NanoFactory" | log
+    check_nanofactory_folder
     generate_nanofactory_apikey "/home/$user/.octoprint/data" "$OCTOADMIN"
     master_device_id_input "/home/$user/.octoprint/data"
+}
+
+check_nanofactory_folder(){
+    if [ ! -d "/home/$user/.octoprint/data/NanoFactory" ]; then
+        echo "Creating NanoFactory folder" | log
+        sudo -u $user mkdir /home/$user/.octoprint/data/NanoFactory
+        sudo chmod -R a+rwx /home/$user/.octoprint/data/NanoFactory
+    fi
 }
 
 generate_nanofactory_apikey(){
