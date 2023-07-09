@@ -311,7 +311,7 @@ generate_nanofactory_apikey(){
     echo "Generating NanoFactory API Key" | log
 
     data_dir_path="$1"
-    username="$2"
+    username="${2:-}"
 
     # Generate the key 
     key=$(openssl rand -hex 16 | tr '[:lower:]' '[:upper:]' | tr -dc 'A-Z0-9' | head -c 32)
@@ -325,7 +325,7 @@ generate_nanofactory_apikey(){
     fi
 
     # Putting the key into the apiKey.txt file 
-    echo "$key" > "$data_dir_pathapiKey"/NanoFactory/apiKey.txt
+    echo "$key" > "$data_dir_path"/NanoFactory/apiKey.txt
 }
 
 
@@ -375,7 +375,7 @@ firstrun() {
     $OCTOEXEC config set plugins.tracking.enabled false --bool | log
     $OCTOEXEC config set printerProfiles.default _default | log
 
-    generate_nanofactory_apikey "/home/$user/.octoprint/data" "$OCTOADMIN"
+    generate_nanofactory_apikey "$OCTOCONFIG/.$INSTANCE/data" 
 }
 
 detect_camera() {
