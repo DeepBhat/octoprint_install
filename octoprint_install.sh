@@ -708,6 +708,7 @@ remove_everything() {
     if [ -f "/etc/camera_ports" ]; then
         rm -f /etc/camera_ports
     fi
+    rm -rf /home/$user/NanoFactory
 }
 
 main_menu() {
