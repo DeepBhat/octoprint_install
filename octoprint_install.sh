@@ -324,19 +324,10 @@ generate_nanofactory_apikey(){
     yq eval '.'"$username"'[0].api_key = "'"$key"'"' "$data_dir_path"/appkeys/keys.yaml -i
     yq eval '.'"$username"'[0].app_id = "NanoFactory"' "$data_dir_path"/appkeys/keys.yaml -i
 
-    nanofactory_data_folder_check "$data_dir_path"
-
     # Putting the key into the apiKey.txt file 
     echo "$key" > "$data_dir_path"/NanoFactory/apiKey.txt
 }
 
-nanofactory_data_folder_check() {
-    data_dir_path="$1"
-
-    if [ ! -d "$data_dir_path"/NanoFactory ]; then
-        mkdir -p "$data_dir_path"/NanoFactory
-    fi
-}
 
 master_device_id_input(){
     while true; do
