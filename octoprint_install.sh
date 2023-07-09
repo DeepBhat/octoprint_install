@@ -97,13 +97,13 @@ install_chromium(){
     if [ -n "$chromium_browser_package" ]; then
         echo "Chromium browser package found: $chromium_browser_package" | log
         # Install Chromium browser
-        sudo apt install -y "$chromium_browser_package"
+        sudo apt install -y chromium-browser
     else
             chromium=$(apt search chromium | grep -o "chromium.*")
         if [ -n "$chromium" ]; then
             echo "Chromium package found: $chromium" | log
             # Install Chromium 
-            sudo apt install -y "$chromium"
+            sudo apt install -y chromium
         else
             echo "Neither chromium-browser nor chromium is available via apt." | log
         fi
