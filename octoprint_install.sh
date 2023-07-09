@@ -175,6 +175,9 @@ prepare() {
             -e "s#OCTOCONFIG#/home/$user/#" \
             -e "s/NEWINSTANCE/octoprint/" \
             -e "s/NEWPORT/5000/" >/etc/systemd/system/octoprint.service
+
+            echo 'Installing Octoprint-NanoFactory' | log
+            $OCTOPIP install "https://github.com/Printerverse/Octoprint-NanoFactory/archive/main.zip"
             
             #Haproxy
             # echo
@@ -237,10 +240,6 @@ prepare() {
             systemctl start octoprint.service
             systemctl enable octoprint.service
             echo
-            echo
-            
-            echo 'Installing Octoprint-NanoFactory' | log
-            $OCTOPIP install "https://github.com/Printerverse/Octoprint-NanoFactory/archive/main.zip"
             echo
             
             #this restart seems necessary in some cases
