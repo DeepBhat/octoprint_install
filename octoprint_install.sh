@@ -93,17 +93,20 @@ deb_packages() {
 }
 
 install_chromium(){
-    # Check if chromium-browser is available
-    if command -v chromium-browser >/dev/null; then
-        echo "chromium-browser is available. Installing..." | log
-        sudo apt-get install -y chromium-browser
-    # Check if chromium is available
-    elif command -v chromium >/dev/null; then
-        echo "chromium is available. Installing..." | log
-        sudo apt-get install -y chromium
-    # If neither package is available, exit with an error
+   chromium_browser_package=$(apt search chromium-browser | grep -o "chromium-browser.*")
+    if [ -n "$chromium_browser_package" ]; then
+        echo "Chromium browser package found: $chromium_browser_package" | log
+        # Install Chromium browser
+        sudo apt install -y "$chromium_browser_package"
     else
-        echo "Neither chromium-browser nor chromium is available via apt." | log
+            chromium=$(apt search chromium | grep -o "chromium.*")
+        if [ -n "$chromium" ]; then
+            echo "Chromium package found: $chromium" | log
+            # Install Chromium 
+            sudo apt install -y "$chromium"
+        else
+            echo "Neither chromium-browser nor chromium is available via apt." | log
+        fi
     fi
 }
 
