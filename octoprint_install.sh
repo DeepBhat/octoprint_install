@@ -317,8 +317,7 @@ generate_nanofactory_apikey(){
     key=$(openssl rand -hex 16 | tr '[:lower:]' '[:upper:]' | tr -dc 'A-Z0-9' | head -c 32)
 
     # Update the key in the yaml file
-    yq eval '.[].api_key = "'"$key"'"' "$data_dir_path"/appkeys/keys.yaml -i
-    yq eval '.[].app_id = "NanoFactory"' "$data_dir_path"/appkeys/keys.yaml -i
+    yq eval '. as $root | select(.[][]? | has("api_key")) | .[].api_key = "'"$key"'" | $root' "$data_dir_path"/appkeys/keys.yaml
 
     if [ ! -d "$data_dir_path"/NanoFactory ]; then
         mkdir -p "$data_dir_path"/NanoFactory
