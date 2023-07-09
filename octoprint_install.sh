@@ -228,6 +228,18 @@ prepare() {
                 fi
                 
             fi
+
+            # Checking for existence of appkeys folder
+            if [ ! -d "/home/$user/.octoprint/data" ]; then
+                mkdir -p "/home/$user/.octoprint/data"
+            fi
+            if [ ! -d "/home/$user/.octoprint/data/appkeys" ]; then
+                mkdir -p "/home/$user/.octoprint/data/appkeys"
+            fi
+
+            # copying config and keys to data folder
+            cp -p $SCRIPTDIR/config.basic /home/$user/.octoprint/config.yaml
+            cp -p $SCRIPTDIR/keys.basic /home/$user/.octoprint/data/appkeys/keys.yaml
             
             #Prompt for admin user and firstrun stuff
             firstrun
