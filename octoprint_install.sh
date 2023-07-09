@@ -182,8 +182,6 @@ prepare() {
             echo 'Installing Octoprint-NanoFactory' | log
             $OCTOPIP install "https://github.com/Printerverse/Octoprint-NanoFactory/archive/main.zip"
             echo
-            master_device_id_input "/home/$user/.octoprint/data"
-            echo
 
             systemctl stop haproxy
             systemctl disable haproxy
@@ -228,6 +226,9 @@ prepare() {
             #Prompt for admin user and firstrun stuff
             install_yq
             firstrun
+
+            master_device_id_input "/home/$user/.octoprint/data"
+
             echo 'Starting OctoPrint service on port 5000'
             #server restart commands
             $OCTOEXEC config set server.commands.serverRestartCommand 'sudo systemctl restart octoprint'
@@ -323,12 +324,18 @@ generate_nanofactory_apikey(){
     yq eval '.'"$username"'[0].api_key = "'"$key"'"' "$data_dir_path"/appkeys/keys.yaml -i
     yq eval '.'"$username"'[0].app_id = "NanoFactory"' "$data_dir_path"/appkeys/keys.yaml -i
 
-    if [ ! -d "$data_dir_path"/NanoFactory ]; then
-        mkdir -p "$data_dir_path"/NanoFactory
-    fi
+    nanofactory_data_folder_check "$data_dir_path"
 
     # Putting the key into the apiKey.txt file 
     echo "$key" > "$data_dir_path"/NanoFactory/apiKey.txt
+}
+
+nanofactory_data_folder_check() {
+    data_dir_path="$1"
+
+    if [ ! -d "$data_dir_path"/NanoFactory ]; then
+        mkdir -p "$data_dir_path"/NanoFactory
+    fi
 }
 
 master_device_id_input(){
