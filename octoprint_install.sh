@@ -747,7 +747,7 @@ main_menu() {
 
 #command line arguments
 if [ "$1" == remove ]; then
-    if prompt_confirm "Remove everything?"; then
+    if prompt_confirm "Yeet everything?"; then
         remove_everything
     fi
 fi
