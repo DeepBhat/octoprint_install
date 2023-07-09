@@ -181,8 +181,6 @@ prepare() {
 
             echo 'Installing Octoprint-NanoFactory' | log
             $OCTOPIP install "https://github.com/Printerverse/Octoprint-NanoFactory/archive/main.zip"
-            install_yq
-            generate_nanofactory_apikey "/home/$user/.octoprint/data"
 
             systemctl stop haproxy
             systemctl disable haproxy
@@ -225,6 +223,7 @@ prepare() {
             cp -p $SCRIPTDIR/keys.basic /home/$user/.octoprint/data/appkeys/keys.yaml
             
             #Prompt for admin user and firstrun stuff
+            install_yq
             firstrun
             echo 'Starting OctoPrint service on port 5000'
             #server restart commands
@@ -310,16 +309,22 @@ streamer_install() {
 
 generate_nanofactory_apikey(){
 
+    echo 
+    echo
+    echo "Generating NanoFactory API Key" | log
+
     data_dir_path="$1"
+    username="$2"
 
     # Generate the key 
     key=$(openssl rand -hex 16 | tr '[:lower:]' '[:upper:]' | tr -dc 'A-Z0-9' | head -c 32)
 
     # Update the key in the yaml file
-    yq eval '.root[0].api_key = "'"$key"'"' "$data_dir_path"/appkeys/keys.yaml -i
+    yq eval '.'"$username"'[0].api_key = "'"$key"'"' "$data_dir_path"/appkeys/keys.yaml -i
+    yq eval '.'"$username"'[0].app_id = "'"$key"'"' "$data_dir_path"/appkeys/keys.yaml -i
 
-    if [ ! -d "$data_dir_path/NanoFactory" ]; then
-        mkdir -p "$data_dir_path/NanoFactory"
+    if [ ! -d "$data_dir_path"/NanoFactory ]; then
+        mkdir -p "$data_dir_path"/NanoFactory
     fi
 
     # Putting the key into the apiKey.txt file 
@@ -348,14 +353,14 @@ firstrun() {
         echo 'Enter admin user name (no spaces): '
         read OCTOADMIN
         if [ -z "$OCTOADMIN" ]; then
-            echo -e "No admin user given! Defaulting to: \033[0;31mroot\033[0m"
+            echo -e "No admin user given! Defaulting to: \033[0;31mAdmin\033[0m"
             OCTOADMIN=octoadmin
         fi
         echo "Admin user: $OCTOADMIN"
         echo 'Enter admin user password (no spaces): '
         read OCTOPASS
         if [ -z "$OCTOPASS" ]; then
-            echo -e "No password given! Defaulting to: \033[0;31mtoor\033[0m. Please CHANGE this."
+            echo -e "No password given! Defaulting to: \033[0;31mprinterverse\033[0m. Please CHANGE this."
             OCTOPASS=fooselrulz
         fi
         echo "Admin password: $OCTOPASS"
@@ -372,6 +377,8 @@ firstrun() {
     $OCTOEXEC config set server.pluginBlacklist.enabled true --bool | log
     $OCTOEXEC config set plugins.tracking.enabled false --bool | log
     $OCTOEXEC config set printerProfiles.default _default | log
+
+    generate_nanofactory_apikey "/home/$user/.octoprint/data" "$OCTOADMIN"
 }
 
 detect_camera() {
