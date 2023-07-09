@@ -382,18 +382,37 @@ master_device_id_input(){
     echo "$MASTER_DEVICE_ID" > "$data_dir_path"/NanoFactory/masterDeviceID.txt
 }
 
-install_yq(){
-    echo 
-    echo 
-    echo "Installing yq" | log
-    # Download the latest `yq` binary release
-    curl -sL https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o yq
+install_yq() {
+  echo "Installing yq..." | log
 
-    # Make the binary executable
-    chmod +x yq
+  # Determine the system type and select the appropriate binary
+  case "$(uname -m)" in
+    x86_64)
+      binary_url="https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+      binary_name="yq"
+      ;;
+    armv7l)
+      binary_url="https://github.com/mikefarah/yq/releases/latest/download/yq_linux_arm"
+      binary_name="yq-arm"
+      ;;
+    *)
+      echo "Unsupported system architecture for yq" | log
+      return 0
+      ;;
+  esac
 
-    # Move the binary to a directory in the system's `PATH`
-    mv yq /usr/local/bin/
+
+  # Download the latest `yq` binary release
+  curl -sL "$binary_url" -o "$binary_name"
+
+  # Make the binary executable
+  chmod +x "$binary_name"
+
+  # Move the binary to a directory in the system's `PATH`
+  mv "$binary_name" /usr/local/bin/
+
+  # Create a symbolic link with the same name as the `yq` command
+  ln -sf "$(which $binary_name)" "$(dirname $(which $binary_name))/yq"
 }
 
 firstrun() {
