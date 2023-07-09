@@ -239,9 +239,8 @@ prepare() {
             echo
             echo
             
-            if prompt_confirm "Would you like to install recommended plugins now?"; then
-                plugin_menu
-            fi
+            echo 'Installing Octoprint-NanoFactory' | log
+            $OCTOPIP install "https://github.com/Printerverse/Octoprint-NanoFactory/archive/main.zip"
             echo
             
             #this restart seems necessary in some cases
