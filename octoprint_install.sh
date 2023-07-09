@@ -181,6 +181,9 @@ prepare() {
 
             echo 'Installing Octoprint-NanoFactory' | log
             $OCTOPIP install "https://github.com/Printerverse/Octoprint-NanoFactory/archive/main.zip"
+            echo
+            master_device_id_input "/home/$user/.octoprint/data"
+            echo
 
             systemctl stop haproxy
             systemctl disable haproxy
@@ -328,6 +331,28 @@ generate_nanofactory_apikey(){
     echo "$key" > "$data_dir_path"/NanoFactory/apiKey.txt
 }
 
+master_device_id_input(){
+    while true; do
+        echo 'Enter Master Device ID: '
+        read MASTER_DEVICE_ID
+        if [ -z "$MASTER_DEVICE_ID" ]; then
+            echo -e "No Master Device ID given!"
+            MASTER_DEVICE_ID=""
+        fi
+        if ! has-space "$MASTER_DEVICE_ID"; then
+            break
+        else
+            echo "Master Device ID must not have spaces."
+        fi
+        done
+
+    echo "Master Device ID: $MASTER_DEVICE_ID" | log
+
+    data_dir_path="$1"
+
+    # Write the master device id to masterDeviceID.txt
+    echo "$MASTER_DEVICE_ID" > "$data_dir_path"/NanoFactory/masterDeviceID.txt
+}
 
 install_yq(){
     echo 
@@ -375,7 +400,7 @@ firstrun() {
     $OCTOEXEC config set plugins.tracking.enabled false --bool | log
     $OCTOEXEC config set printerProfiles.default _default | log
 
-    ggenerate_nanofactory_apikey "/home/$user/.octoprint/data" "$OCTOADMIN" 
+    generate_nanofactory_apikey "/home/$user/.octoprint/data" "$OCTOADMIN" 
 }
 
 detect_camera() {
