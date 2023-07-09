@@ -177,29 +177,29 @@ prepare() {
             -e "s/NEWPORT/5000/" >/etc/systemd/system/octoprint.service
             
             #Haproxy
-            echo
-            echo
-            echo 'You have the option of setting up haproxy.'
-            echo 'This binds instance to a name on port 80 instead of having to type the port.'
-            echo
-            echo
-            if prompt_confirm "Use haproxy?"; then
-                systemctl stop haproxy
-                #get haproxy version
-                echo 'haproxy: true' >>/etc/octoprint_deploy
-                HAversion=$(haproxy -v | sed -n 's/^.*version \([0-9]\).*/\1/p')
-                mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.orig
-                if [ $HAversion -gt 1 ]; then
-                    cp $SCRIPTDIR/haproxy2x.basic /etc/haproxy/haproxy.cfg
-                else
-                    cp $SCRIPTDIR/haproxy1x.basic /etc/haproxy/haproxy.cfg
-                fi
-                systemctl start haproxy
-                systemctl enable haproxy
-            else
+            # echo
+            # echo
+            # echo 'You have the option of setting up haproxy.'
+            # echo 'This binds instance to a name on port 80 instead of having to type the port.'
+            # echo
+            # echo
+            # if prompt_confirm "Use haproxy?"; then
+            #     systemctl stop haproxy
+            #     #get haproxy version
+            #     echo 'haproxy: true' >>/etc/octoprint_deploy
+            #     HAversion=$(haproxy -v | sed -n 's/^.*version \([0-9]\).*/\1/p')
+            #     mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.orig
+            #     if [ $HAversion -gt 1 ]; then
+            #         cp $SCRIPTDIR/haproxy2x.basic /etc/haproxy/haproxy.cfg
+            #     else
+            #         cp $SCRIPTDIR/haproxy1x.basic /etc/haproxy/haproxy.cfg
+            #     fi
+            #     systemctl start haproxy
+            #     systemctl enable haproxy
+            # else
                 systemctl stop haproxy
                 systemctl disable haproxy
-            fi
+            # fi
             
             echo
             echo
