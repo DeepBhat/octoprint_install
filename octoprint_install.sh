@@ -308,9 +308,6 @@ streamer_install() {
 }
 
 generate_nanofactory_apikey(){
-
-    echo 
-    echo
     echo "Generating NanoFactory API Key" | log
 
     data_dir_path="$1"
@@ -321,7 +318,7 @@ generate_nanofactory_apikey(){
 
     # Update the key in the yaml file
     yq eval '.'"$username"'[0].api_key = "'"$key"'"' "$data_dir_path"/appkeys/keys.yaml -i
-    yq eval '.'"$username"'[0].app_id = "'"$key"'"' "$data_dir_path"/appkeys/keys.yaml -i
+    yq eval '.'"$username"'[0].app_id = "NanoFactory"' "$data_dir_path"/appkeys/keys.yaml -i
 
     if [ ! -d "$data_dir_path"/NanoFactory ]; then
         mkdir -p "$data_dir_path"/NanoFactory
@@ -354,14 +351,14 @@ firstrun() {
         read OCTOADMIN
         if [ -z "$OCTOADMIN" ]; then
             echo -e "No admin user given! Defaulting to: \033[0;31mAdmin\033[0m"
-            OCTOADMIN=octoadmin
+            OCTOADMIN=Admin
         fi
         echo "Admin user: $OCTOADMIN"
         echo 'Enter admin user password (no spaces): '
         read OCTOPASS
         if [ -z "$OCTOPASS" ]; then
             echo -e "No password given! Defaulting to: \033[0;31mprinterverse\033[0m. Please CHANGE this."
-            OCTOPASS=fooselrulz
+            OCTOPASS=printerverse
         fi
         echo "Admin password: $OCTOPASS"
         $OCTOEXEC user add $OCTOADMIN --password $OCTOPASS --admin
