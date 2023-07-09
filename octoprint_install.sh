@@ -57,6 +57,7 @@ deb_packages() {
     apt-cache --generate pkgnames |
     grep --line-regexp --fixed-strings \
     -e make \
+    -e curl \
     -e v4l-utils \
     -e python-is-python3 \
     -e python3-venv \
@@ -78,6 +79,8 @@ deb_packages() {
     -e libjpeg-dev \
     -e libbsd-dev \
     -e ffmpeg \
+    -e chromium\
+    -e chromium-browser\
     -e uuid-runtime -e ssh -e libffi-dev -e haproxy -e ssl-cert | xargs apt-get install -y
     
     #pacakges to REMOVE go here
