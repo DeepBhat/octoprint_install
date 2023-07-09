@@ -227,8 +227,6 @@ prepare() {
             install_yq
             firstrun
 
-            master_device_id_input "/home/$user/.octoprint/data"
-
             echo 'Starting OctoPrint service on port 5000'
             #server restart commands
             $OCTOEXEC config set server.commands.serverRestartCommand 'sudo systemctl restart octoprint'
@@ -241,6 +239,11 @@ prepare() {
             echo
             
             #this restart seems necessary in some cases
+            systemctl restart octoprint.service
+            sleep 5
+            echo
+            initialize_nanofactory
+            echo
             systemctl restart octoprint.service
         fi
         touch /etc/camera_ports
@@ -309,6 +312,11 @@ streamer_install() {
     if [ $VID -eq 3 ]; then
         echo "Good for you! Cameras are just annoying anyway."
     fi
+}
+
+initialize_nanofactory() {
+    generate_nanofactory_apikey "/home/$user/.octoprint/data" "$OCTOADMIN"
+    master_device_id_input "/home/$user/.octoprint/data"
 }
 
 generate_nanofactory_apikey(){
