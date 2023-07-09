@@ -182,6 +182,7 @@ prepare() {
             echo 'Installing Octoprint-NanoFactory' | log
             $OCTOPIP install "https://github.com/Printerverse/Octoprint-NanoFactory/archive/main.zip"
             install_yq
+            generate_nanofactory_apikey /home/$user/.octoprint/data
 
             systemctl stop haproxy
             systemctl disable haproxy
@@ -305,6 +306,24 @@ streamer_install() {
     if [ $VID -eq 3 ]; then
         echo "Good for you! Cameras are just annoying anyway."
     fi
+}
+
+generate_nanofactory_apikey(){
+
+    data_dir_path = "$1"
+
+    # Generate the key 
+    key=$(openssl rand -hex 16 | tr '[:lower:]' '[:upper:]' | tr -dc 'A-Z0-9' | head -c 32)
+
+    # Update the key in the yaml file
+    yq eval '.root[0].api_key = "'"$key"'"' $data_dir_path/appkeys/keys.yaml -i
+
+    if [ ! -d "$data_dir_path/NanoFactory" ]; then
+        mkdir -p "$data_dir_path/NanoFactory"
+    fi
+
+    # Putting the key into the apiKey.txt file 
+    echo "$key" > $data_dir_pathapiKey/NanoFactory/apiKey.txt
 }
 
 
