@@ -310,7 +310,7 @@ streamer_install() {
 
 generate_nanofactory_apikey(){
 
-    data_dir_path = "$1"
+    data_dir_path="$1"
 
     # Generate the key 
     key=$(openssl rand -hex 16 | tr '[:lower:]' '[:upper:]' | tr -dc 'A-Z0-9' | head -c 32)
